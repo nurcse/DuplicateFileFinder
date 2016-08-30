@@ -13,7 +13,13 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 public class cosineSimilarity {
-
+    
+    /**this method calculate the cosine similarity score between two file string
+     *
+     * @param str1 this receives the byte string of a file
+     * @param str2 this receives the byte string of another file
+     * @return sim_score this is the similarity score for given two file string
+     */
     public double cosineSimilarityScore(String str1, String str2) {
 
         double sim_score = 0.0;
