@@ -15,6 +15,12 @@ import javax.swing.JButton;
  *
  * @author nur_uddin
  */
+
+/**
+ * This class receives View reference, directory path and algorithm choice. It generates list of
+ * all files of the directory and gathers required information and search the
+ * duplicate files.
+ */
 public class DFFinder implements Runnable{
     
     final int MAX = 100000;
@@ -30,6 +36,15 @@ public class DFFinder implements Runnable{
     int alChoice;
     Thread t; 
     
+    /**
+     * This is the constructor method for the class DFFinder. It initializes some
+     * variable and revives UserInterface class Object reference.
+     *
+     * @param v This receives the View Object reference.
+     * @param dirName This receives the directory path.
+     * @param algoChoice This receives the value that selects the algorithm to
+     * apply.
+     */
     public DFFinder(View v, String dirName, int algoChoice){
         view = v;
         this.dirName = dirName;
@@ -38,6 +53,10 @@ public class DFFinder implements Runnable{
         t.start();
     }
     
+    /**
+     * This runs the thread which is called in the startFindingButtonActionPerformed method in
+     * View class.
+     */
     public void run(){
         int countFile ;
         countFile = listAllFiles(this.dirName);
@@ -50,18 +69,13 @@ public class DFFinder implements Runnable{
         }
     }
     
-    /*public void findDuplicates(){
-        int countFile ;
-        countFile = listAllFiles(this.dirName);
-        System.out.println(countFile);
-        
-        try{
-            showInfo(countFile);
-        }catch(Exception e){
-            
-        }
-    } */
-    
+    /**
+     * This method searches the duplicate files using cosine similarity score 
+     * above the threshold value given by the user
+     *
+     * @param count This receives the total number of the file.
+     * @throws Exception
+     */
     public void cosineSimilaritySearch(int count)throws Exception{
         int col;
         String str1=null, str2=null;
@@ -111,6 +125,13 @@ public class DFFinder implements Runnable{
         }
     }
     
+    /**
+     * This method searches the duplicate files matching the file sizes first
+     * and find duplicates by verifying their CRC32 Hash values .
+     *
+     * @param count This receives the total number of the file.
+     * @throws Exception
+     */
     public void duplicateSearchCRC32(int count)throws Exception{
         int col;
 
@@ -152,6 +173,13 @@ public class DFFinder implements Runnable{
         }
     }
     
+    /**
+     * This method searches the duplicate files, matching the file sizes first
+     * and find duplicates by verifying their MD5 Hash values .
+     *
+     * @param count This receives the total number of the file.
+     * @throws Exception
+     */
     public void duplicateSearchMD5(int count) throws Exception{
         int col;
 
@@ -194,12 +222,17 @@ public class DFFinder implements Runnable{
         }
     }
     
+    /**
+     * This method searches the duplicate files, matching the file sizes.
+     *
+     * @param count This receives the total number of the file.
+     * @throws Exception
+     */
     public void duplicateSearchFileSize (int count)throws Exception{
         int col;
 
         for (int i = 0; i < count; i++)
         {
-
             col = 1;
             for (int j = i + 1; j < count; j++)
             {
@@ -214,6 +247,7 @@ public class DFFinder implements Runnable{
                             duplicounter[i][0]++;
                             duplicounter[i][col++] = i;
                         }
+                        //shows the current progress.
                         view.progressStatus.setText("Searching Duplicate For : " + filePaths[i][1]);
                         duplicounter[i][0]++;
                         duplicounter[i][col++] = j;
@@ -222,11 +256,19 @@ public class DFFinder implements Runnable{
             }
             if (duplicounter[i][0] >= 1)
             {
+                //making a ArrayList of the duplicate files' paths.
                 dcList.add(duplicounter[i]);
             }
         }
     }
     
+    /**
+     * This method calls the chosen method for searching duplicates and shows
+     * the output in the window.
+     *
+     * @param count This receives the total number of files.
+     * @throws Exception
+     */
     public void showInfo(int count)throws Exception{
         int num, n, incident, totalDuplicateFiles, duplicatePathNum;
         
@@ -234,10 +276,12 @@ public class DFFinder implements Runnable{
         String output = "";
         long dFileSize;
         if(count ==0){
+            //If selected directory is empty
             view.progressStatus.setText("Empty Directory "+"\n");
             view.duplicateShow.setText("NO FILES HERE TO COMPARE ...");
         }
         else{
+            //call duplicateSearch Method based on chosen algorithm by user
             if(alChoice==1){
                 cosineSimilaritySearch(count);
             }
@@ -252,11 +296,15 @@ public class DFFinder implements Runnable{
             }
             incident = dcList.size();
             totalDuplicateFiles = 0;
+            
+            //showing current progress
             view.progressStatus.setText("Generating Duplicate File Lists ...");
             
             output="";
+            //clearing previous result
             view.duplicateShow.setText(output);
             
+            //traverse the ArrayList and shows the output.
             for(int k=0 ; k<incident ; k++){
                 num = dcList.get(k)[0];
                 totalDuplicateFiles += (num-1);
@@ -279,9 +327,6 @@ public class DFFinder implements Runnable{
                                 + dFileSize + "bytes " + "  " + "\n";
                         
                         view.duplicateShow.append(output);
-                        
-                        //view.duplicateShow.add(output);
-                        
                     }
                 }
             }
@@ -297,6 +342,15 @@ public class DFFinder implements Runnable{
         }
     }
     
+    /**
+     * This method traverse the all files from selected directory recursively
+     * and collect informations.
+     *
+     * @param dirName This receives the directory name that is chosen by the
+     * user.
+     * @return iter value changed. At the end of the recursive calling, this is
+     * the total number of files in the directory.
+     */
     public int listAllFiles(String dirName){
         
         String filePath, fileName, ext;
