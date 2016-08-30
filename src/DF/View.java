@@ -221,6 +221,7 @@ public class View extends javax.swing.JFrame {
 
     private void openDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDirectoryActionPerformed
         // TODO add your handling code here:
+        // display file dialog, so user can choose file or directory to open
         JFileChooser fileChose = new JFileChooser();
         fileChose.setFileSelectionMode(
                 JFileChooser.FILES_AND_DIRECTORIES);
@@ -228,8 +229,9 @@ public class View extends javax.swing.JFrame {
         int result = fileChose.showOpenDialog(this);
         System.out.println(result);
         
-        File fileName = fileChose.getSelectedFile();
+        File fileName = fileChose.getSelectedFile();  //get File
         
+        // if user clicked Cancel button on dialog, it will show an error message
         if ((fileName == null) || (fileName.getName().equals("")))
         {
             JOptionPane.showMessageDialog(this, "Invalid Name",
@@ -245,16 +247,18 @@ public class View extends javax.swing.JFrame {
 
     private void startFindingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startFindingButtonActionPerformed
         // TODO add your handling code here:
+        // if CosineSimilarity radio button is selected enter here
         if(cosineRadioButton.isSelected()){
             try{
                 DFFinder listFiles = new DFFinder(this, pathName, 1);
-                String cosineLimit = cosineLimitTextField.getText();
+                String cosineLimit = cosineLimitTextField.getText();  //get desired percentage of cosine similarity
                 this.cosineLimit = Integer.parseInt(cosineLimit);
                 //listFiles.findDuplicates();
             }catch(Exception e){
                 
             }
         }
+        // if MD5 radio button is selected enter here
         else if(md5RadioButton.isSelected()){
             try{
                 DFFinder listFiles = new DFFinder(this, pathName, 2);
@@ -264,6 +268,7 @@ public class View extends javax.swing.JFrame {
                 
             }
         }
+        // if CRC32 radio button is selected enter here
         else if(crc32RadioButton.isSelected()){
             try{
                 DFFinder listFiles = new DFFinder(this, pathName, 3);
@@ -273,6 +278,7 @@ public class View extends javax.swing.JFrame {
                 
             }
         }
+        // if FileSize radio button is selected enter here
         else if (sizeRadioButton.isSelected()){
             try{
                 DFFinder listFiles = new DFFinder(this, pathName, 4);
@@ -282,6 +288,7 @@ public class View extends javax.swing.JFrame {
                 
             }
         }
+        // if nothing is selected enter here
         else{
             JOptionPane.showMessageDialog(this,"Select a Method" ,
                    "Warning" , JOptionPane.WARNING_MESSAGE);
@@ -320,14 +327,16 @@ public class View extends javax.swing.JFrame {
          */
         try {
             
+                                  // Jtattoo themes
             //javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
             javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
             //javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
             //javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.mcwin.McWinLookAndFeel");
-                 
             //javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.smart.SmartLookAndFeel");
             //javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.texture.TextureLookAndFeel");
             //javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+            
+            
             /*for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
